@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Furniture Company - Управление производством</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <h1> Райская мебель</h1>
+
+            <h2>Каталог</h2>
+            <button class="sidebar__btn" data-page="product_types">Типы продукции</button>
+            <button class="sidebar__btn" data-page="material_types">Типы материалов</button>
+            <button class="sidebar__btn" data-page="products">Продукты</button>
+
+            <h2>Производство</h2>
+            <button class="sidebar__btn" data-page="workshops">Цехи</button>
+            <button class="sidebar__btn" data-page="product_workshops">Маршруты</button>
+
+            <h2>Бизнес</h2>
+            <button class="sidebar__btn" data-page="raw_calc">Расчёт сырья</button>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="main">
+            <div class="header">
+                <h1><span id="page-title">Типы продукции</span></h1>
+            </div>
+
+            <div class="content">
+                <!-- PAGE 1: PRODUCT TYPES -->
+                <div id="product_types" class="content-section active">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Коэффициент</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product_types-table">
+                            <tr><td colspan="4" style="text-align:center;padding:20px">⏳ Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                    <button class="add-btn" onclick="showAddForm('product_types')">+ Добавить тип продукции</button>
+                </div>
+
+                <!-- PAGE 2: MATERIAL TYPES -->
+                <div id="material_types" class="content-section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>% потерь</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="material_types-table">
+                            <tr><td colspan="4" style="text-align:center;padding:20px">⏳ Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                    <button class="add-btn" onclick="showAddForm('material_types')">+ Добавить тип материала</button>
+                </div>
+
+                <!-- PAGE 3: PRODUCTS -->
+        <div id="products" class="content-section">
+            <div id="products-table">
+                <div class="table__loading" style="text-align:center;padding:20px;color:#6b7280">⏳ Загрузка...</div>
+            </div>
+            <button class="add-btn" onclick="showAddForm('products')" style="margin-top: 24px;">+ Добавить продукт</button>
+        </div>
+
+
+                <!-- PAGE 4: WORKSHOPS -->
+                <div id="workshops" class="content-section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Название</th>
+                                <th>Тип</th>
+                                <th>Сотрудников</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="workshops-table">
+                            <tr><td colspan="5" style="text-align:center;padding:20px">⏳ Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                    <button class="add-btn" onclick="showAddForm('workshops')">+ Добавить цех</button>
+                </div>
+
+                <!-- PAGE 5: PRODUCT WORKSHOPS (МАРШРУТЫ) -->
+                <div id="product_workshops" class="content-section">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Продукт</th>
+                                <th>Цех</th>
+                                <th>Время (ч)</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product_workshops-table">
+                            <tr><td colspan="5" style="text-align:center;padding:20px">⏳ Загрузка...</td></tr>
+                        </tbody>
+                    </table>
+                    <button class="add-btn" onclick="showAddForm('product_workshops')">+ Добавить маршрут</button>
+                </div>
+
+                <!-- PAGE 6: RAW MATERIAL CALCULATOR -->
+                <div id="raw_calc" class="content-section">
+                    <div class="card">
+                        <div class="card__header card__header--with-actions">
+                            <div>
+                                <h2>Расчёт необходимого сырья</h2>
+                                <p class="card__subtitle">
+                                    Выберите тип продукции, материал и введите параметры партии. Система автоматически рассчитает необходимое количество сырья с учётом % потерь материала.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="card__body">
+                            <form id="raw_calc-form" class="rawcalc-form">
+                                <div class="form-group">
+                                    <label for="rc-product">Тип продукции</label>
+                                    <select id="rc-product" class="form-control">
+                                        <option value="">-- Выберите тип продукции --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rc-material">Тип материала</label>
+                                    <select id="rc-material" class="form-control" onchange="updateMaterialLoss()">
+                                        <option value="">-- Выберите тип материала --</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rc-loss">% потерь материала</label>
+                                    <input id="rc-loss" type="number" class="form-control" readonly style="background-color: #f3f4f6; cursor: not-allowed;" placeholder="Выбранный материал - - % потерь">
+                                    <small>Значение берётся автоматически из типа материала</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rc-qty">Количество единиц</label>
+                                    <input id="rc-qty" type="number" min="1" step="1" placeholder="Например: 10" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rc-param1">Длина (см)</label>
+                                    <input id="rc-param1" type="number" step="0.01" placeholder="Например: 2.5" class="form-control">
+                                    <small>Вещественное число &gt; 0</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="rc-param2">Ширина (см)</label>
+                                    <input id="rc-param2" type="number" step="0.01" placeholder="Например: 1.5" class="form-control">
+                                    <small>Вещественное число &gt; 0</small>
+                                </div>
+
+                                <div class="form-buttons">
+                                    <button type="button" class="btn-submit" id="rc-calc-btn">Рассчитать сырьё</button>
+                                    <button type="reset" class="btn-cancel">Очистить</button>
+                                </div>
+                            </form>
+
+                            <div class="table-wrapper" style="margin-top:16px">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Тип продукции</th>
+                                            <th>Тип материала</th>
+                                            <th>Кол-во единиц</th>
+                                            <th>Длина</th>
+                                            <th>Ширина</th>
+                                            <th>Основной объём (см³)</th>
+                                            <th>% потерь</th>
+                                            <th>Итого сырья (см³)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="raw_calc-result">
+                                        <tr class="table__loading">
+                                            <td colspan="8" style="text-align:center;padding:16px;color:#6b7280">
+                                                Результат будет показан после расчёта
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL FOR ADDING/EDITING -->
+    <div id="add-modal">
+        <div class="modal-content">
+            <div id="form-container"></div>
+        </div>
+    </div>
+
+    <!-- СКРИПТЫ В ПРАВИЛЬНОМ ПОРЯДКЕ -->
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/ui.js"></script>
+    <script src="/static/js/add_form.js"></script>
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/calc.js"></script>
+
+</body>
+</html>
